@@ -1,8 +1,8 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/vue-starter-kit",
+    "name": "uas/gudang-inventaris",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "Sistem Manajemen Inventaris Gudang - UAS Web Application Development.",
     "keywords": [
         "laravel",
         "framework"
@@ -10,12 +10,8 @@
     "license": "MIT",
     "require": {
         "php": "^8.3",
-        "inertiajs/inertia-laravel": "^3.0",
-        "laravel/chisel": "^0.1.0",
-        "laravel/fortify": "^1.37.2",
         "laravel/framework": "^13.17",
-        "laravel/tinker": "^3.0",
-        "laravel/wayfinder": "^0.1.14"
+        "laravel/tinker": "^3.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.24",

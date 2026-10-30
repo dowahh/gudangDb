@@ -38,6 +38,10 @@
                            class="block px-3 py-2 rounded {{ request()->routeIs('suppliers.*') ? 'bg-slate-700' : 'hover:bg-slate-700' }}">
                             Supplier
                         </a>
+                        <a href="{{ route('users.index') }}"
+                           class="block px-3 py-2 rounded {{ request()->routeIs('users.*') ? 'bg-slate-700' : 'hover:bg-slate-700' }}">
+                            User
+                        </a>
                         <a href="{{ route('admin.contoh') }}"
                            class="block px-3 py-2 rounded {{ request()->routeIs('admin.contoh') ? 'bg-slate-700' : 'hover:bg-slate-700' }}">
                             Admin Contoh

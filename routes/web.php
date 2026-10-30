@@ -5,6 +5,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\StockTransactionController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -42,6 +43,9 @@ Route::middleware('auth')->group(function () {
         Route::resource('suppliers', SupplierController::class)->except('show');
         // index sudah didefinisikan di atas untuk semua role
         Route::resource('items', ItemController::class)->except(['show', 'index']);
+
+        // KEAMANAN: kelola user (ubah role, hapus) hanya admin
+        Route::resource('users', UserController::class)->only(['index', 'update', 'destroy']);
 
         // Contoh rute admin: hanya role admin yang boleh (CheckRole → 403)
         Route::get('/admin/contoh', function () {

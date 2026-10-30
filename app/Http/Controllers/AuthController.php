@@ -8,7 +8,6 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 
 class AuthController extends Controller
@@ -27,8 +26,9 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $request->string('name'),
             'email' => $request->string('email'),
-            // KEAMANAN: password di-hash, tidak pernah disimpan plain text
-            'password' => Hash::make($request->string('password')),
+            // KEAMANAN: password cukup dikirim mentah — cast 'hashed' di model
+            // User yang meng-hash. Hanya satu cara hashing di seluruh aplikasi.
+            'password' => $request->string('password'),
             'role' => 'staff',
         ]);
 

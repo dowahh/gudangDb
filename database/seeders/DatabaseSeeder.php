@@ -8,7 +8,6 @@ use App\Models\StockTransaction;
 use App\Models\Supplier;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -63,21 +62,21 @@ class DatabaseSeeder extends Seeder
         $admin = User::create([
             'name' => 'Budi Santoso',
             'email' => 'admin@gudang.test',
-            'password' => Hash::make('password'),
+            'password' => 'password', // plain; cast 'hashed' di model yang meng-hash
             'role' => 'admin',
         ]);
 
         $staffAndi = User::create([
             'name' => 'Andi Wijaya',
             'email' => 'andi@gudang.test',
-            'password' => Hash::make('password'),
+            'password' => 'password',
             'role' => 'staff',
         ]);
 
         $staffSari = User::create([
             'name' => 'Sari Rahayu',
             'email' => 'sari@gudang.test',
-            'password' => Hash::make('password'),
+            'password' => 'password',
             'role' => 'staff',
         ]);
 

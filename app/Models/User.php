@@ -26,6 +26,8 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
+            // KEAMANAN: password di-hash otomatis saat disimpan.
+            // Ini satu-satunya cara hashing di aplikasi (tanpa Hash::make manual).
             'password' => 'hashed',
         ];
     }

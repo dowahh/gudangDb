@@ -40,7 +40,7 @@ test('login gagal menampilkan pesan error umum', function () {
 test('staff diblokir dari rute admin dengan 403', function () {
     $staff = User::factory()->create(); // role default staff
 
-    $response = $this->actingAs($staff)->get('/admin/contoh');
+    $response = $this->actingAs($staff)->get('/categories');
 
     $response->assertForbidden();
 });
@@ -48,7 +48,7 @@ test('staff diblokir dari rute admin dengan 403', function () {
 test('admin bisa membuka rute admin', function () {
     $admin = User::factory()->admin()->create();
 
-    $response = $this->actingAs($admin)->get('/admin/contoh');
+    $response = $this->actingAs($admin)->get('/categories');
 
     $response->assertOk();
 });

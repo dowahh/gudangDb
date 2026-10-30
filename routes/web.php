@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\StockTransactionController;
 use App\Http\Controllers\SupplierController;
@@ -25,12 +26,16 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // KEAMANAN: data grafik dashboard hanya untuk yang sudah login
+    Route::get('/dashboard/chart', [DashboardController::class, 'chart'])->name('dashboard.chart');
 
     // KEAMANAN: daftar barang boleh dilihat semua role yang login (staff & admin)
     Route::get('/items', [ItemController::class, 'index'])->name('items.index');
+
+    // JSON live search barang untuk form transaksi
+    Route::get('/items/search', [ItemController::class, 'search'])->name('items.search');
 
     // KEAMANAN: catat & lihat transaksi stok — semua role yang login.
     // Staff hanya melihat riwayat miliknya (dicek di controller).
@@ -46,10 +51,5 @@ Route::middleware('auth')->group(function () {
 
         // KEAMANAN: kelola user (ubah role, hapus) hanya admin
         Route::resource('users', UserController::class)->only(['index', 'update', 'destroy']);
-
-        // Contoh rute admin: hanya role admin yang boleh (CheckRole → 403)
-        Route::get('/admin/contoh', function () {
-            return view('admin.contoh');
-        })->name('admin.contoh');
     });
 });

@@ -47,7 +47,6 @@ class StockTransactionController extends Controller
     public function create(): View
     {
         return view('transactions.create', [
-            'items' => Item::query()->orderBy('name')->get(),
             'suppliers' => Supplier::query()->orderBy('name')->get(),
         ]);
     }

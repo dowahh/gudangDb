@@ -17,16 +17,22 @@
             @csrf
 
             <div>
-                <label for="item_id" class="block text-sm font-medium mb-1">Barang</label>
-                <select id="item_id" name="item_id" required
-                        class="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-500">
-                    <option value="">Pilih barang</option>
-                    @foreach ($items as $item)
-                        <option value="{{ $item->id }}" @selected(old('item_id') == $item->id)>
-                            {{ $item->name }} ({{ $item->sku }}) — stok {{ $item->stock }}
-                        </option>
-                    @endforeach
-                </select>
+                <label for="item-search" class="block text-sm font-medium mb-1">Barang</label>
+                {{-- live search: ketik nama/SKU, pilih dari daftar hasil (JS fetch ke /items/search) --}}
+                <input type="text" id="item-search" autocomplete="off" placeholder="Ketik nama atau SKU..."
+                       value=""
+                       class="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-500">
+                {{-- item_id diisi JS saat user memilih dari hasil search --}}
+                <input type="hidden" id="item_id" name="item_id" value="{{ old('item_id') }}">
+                <ul id="item-search-results"
+                    class="mt-1 rounded border border-gray-200 bg-white divide-y divide-gray-100"
+                    hidden></ul>
+                <p id="item-selected-info" class="mt-1 text-xs text-gray-600">
+                    @if (old('item_id'))
+                        Barang terpilih (id {{ old('item_id') }}) — cari ulang untuk melihat detail.
+                    @endif
+                </p>
+                <button type="button" id="item-clear" class="mt-1 text-xs text-gray-500 underline">Pilih barang lain</button>
             </div>
 
             <div>

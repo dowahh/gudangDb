@@ -1,14 +1,6 @@
-// Entry JavaScript. File lain (dashboard.js, dst) di-include per halaman lewat @push.
+// Entry JavaScript: dimuat di semua halaman lewat @vite di layout.
+// Setiap file no-op kalau elemen halaman itu tidak ada.
 
-// KEAMANAN UX: konfirmasi sebelum menghapus data lewat form
-document.addEventListener('submit', (event) => {
-    const form = event.target;
-
-    if (!(form instanceof HTMLFormElement)) {
-        return;
-    }
-
-    if (form.dataset.confirm && !window.confirm(form.dataset.confirm)) {
-        event.preventDefault();
-    }
-});
+import './confirm-delete.js';
+import './dashboard-chart.js';
+import './transaction-search.js';

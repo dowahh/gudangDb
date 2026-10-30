@@ -6,12 +6,33 @@ use App\Http\Requests\ItemStoreRequest;
 use App\Http\Requests\ItemUpdateRequest;
 use App\Models\Category;
 use App\Models\Item;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ItemController extends Controller
 {
+    /**
+     * JSON untuk live search di form transaksi (dipanggil fetch dari JS).
+     */
+    public function search(Request $request): JsonResponse
+    {
+        $items = Item::query()
+            ->when($request->filled('q'), function ($query) use ($request) {
+                $search = $request->string('q');
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('sku', 'like', "%{$search}%");
+                });
+            })
+            ->orderBy('name')
+            ->limit(10)
+            ->get(['id', 'sku', 'name', 'stock']);
+
+        return response()->json($items);
+    }
+
     public function index(Request $request): View
     {
         $categories = Category::query()->orderBy('name')->get();

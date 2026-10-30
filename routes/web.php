@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\StockTransactionController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserController;
@@ -51,5 +52,8 @@ Route::middleware('auth')->group(function () {
 
         // KEAMANAN: kelola user (ubah role, hapus) hanya admin
         Route::resource('users', UserController::class)->only(['index', 'update', 'destroy']);
+
+        // KEAMANAN: laporan hanya admin
+        Route::get('/reports/stock', [ReportController::class, 'stock'])->name('reports.stock');
     });
 });

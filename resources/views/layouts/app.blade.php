@@ -42,6 +42,10 @@
                            class="block px-3 py-2 rounded {{ request()->routeIs('users.*') ? 'bg-slate-700' : 'hover:bg-slate-700' }}">
                             User
                         </a>
+                        <a href="{{ route('reports.stock') }}"
+                           class="block px-3 py-2 rounded {{ request()->routeIs('reports.*') ? 'bg-slate-700' : 'hover:bg-slate-700' }}">
+                            Laporan
+                        </a>
                     @endif
                 </nav>
                 <div class="px-4 py-4 border-t border-slate-700 text-sm">

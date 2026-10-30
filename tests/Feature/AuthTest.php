@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\User;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 
 test('login berhasil dan diarahkan ke dashboard', function () {
     $user = User::factory()->create([
@@ -55,4 +57,48 @@ test('guest diarahkan ke halaman login', function () {
     $response = $this->get('/dashboard');
 
     $response->assertRedirect(route('login'));
+});
+
+test('register membuat user dengan role staff', function () {
+    $response = $this->post('/register', [
+        'name' => 'Pengguna Baru',
+        'email' => 'baru@gudang.test',
+        'password' => 'password123',
+        'password_confirmation' => 'password123',
+    ]);
+
+    $response->assertRedirect(route('dashboard'));
+    $this->assertAuthenticated();
+
+    $user = User::query()->where('email', 'baru@gudang.test')->first();
+    expect($user)->not->toBeNull();
+    expect($user->role)->toBe('staff');
+});
+
+test('login salah berulang kena rate limit', function () {
+    User::factory()->create([
+        'email' => 'limit@gudang.test',
+        'password' => 'password123',
+    ]);
+
+    // bersihkan rate limiter supaya tidak tercampur test lain
+    $key = Str::lower('limit@gudang.test').'|'.request()->ip();
+    RateLimiter::clear($key);
+
+    foreach (range(1, 5) as $i) {
+        $this->post('/login', [
+            'email' => 'limit@gudang.test',
+            'password' => 'salah',
+        ]);
+    }
+
+    $response = $this->from('/login')->post('/login', [
+        'email' => 'limit@gudang.test',
+        'password' => 'salah',
+    ]);
+
+    $response->assertRedirect('/login');
+    $response->assertSessionHasErrors('email');
+    expect(session('errors')->first())->toContain('Terlalu banyak percobaan login');
+    $this->assertGuest();
 });

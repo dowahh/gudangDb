@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'Dashboard') - Inventaris Gudang</title>
-    @vite(['resources/css/app.css'])
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-gray-100 text-gray-900 min-h-screen">
 
@@ -20,8 +20,20 @@
                        class="block px-3 py-2 rounded {{ request()->routeIs('dashboard') ? 'bg-slate-700' : 'hover:bg-slate-700' }}">
                         Dashboard
                     </a>
-                    {{-- Menu admin tampil hanya untuk admin. Proteksi asli ada di middleware route. --}}
+                    <a href="{{ route('items.index') }}"
+                       class="block px-3 py-2 rounded {{ request()->routeIs('items.*') ? 'bg-slate-700' : 'hover:bg-slate-700' }}">
+                        Barang
+                    </a>
+                    {{-- Menu master data tampil hanya untuk admin. Proteksi asli ada di middleware route. --}}
                     @if (auth()->user()->isAdmin())
+                        <a href="{{ route('categories.index') }}"
+                           class="block px-3 py-2 rounded {{ request()->routeIs('categories.*') ? 'bg-slate-700' : 'hover:bg-slate-700' }}">
+                            Kategori
+                        </a>
+                        <a href="{{ route('suppliers.index') }}"
+                           class="block px-3 py-2 rounded {{ request()->routeIs('suppliers.*') ? 'bg-slate-700' : 'hover:bg-slate-700' }}">
+                            Supplier
+                        </a>
                         <a href="{{ route('admin.contoh') }}"
                            class="block px-3 py-2 rounded {{ request()->routeIs('admin.contoh') ? 'bg-slate-700' : 'hover:bg-slate-700' }}">
                             Admin Contoh
@@ -45,6 +57,12 @@
                 @if (session('status'))
                     <div class="mb-4 rounded border border-green-300 bg-green-50 px-4 py-3 text-sm text-green-800">
                         {{ session('status') }}
+                    </div>
+                @endif
+
+                @if (session('error'))
+                    <div class="mb-4 rounded border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800">
+                        {{ session('error') }}
                     </div>
                 @endif
 

@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\StockTransactionController;
 use App\Http\Controllers\SupplierController;
 use Illuminate\Support\Facades\Route;
 
@@ -29,6 +30,11 @@ Route::middleware('auth')->group(function () {
 
     // KEAMANAN: daftar barang boleh dilihat semua role yang login (staff & admin)
     Route::get('/items', [ItemController::class, 'index'])->name('items.index');
+
+    // KEAMANAN: catat & lihat transaksi stok — semua role yang login.
+    // Staff hanya melihat riwayat miliknya (dicek di controller).
+    Route::resource('transactions', StockTransactionController::class)
+        ->only(['index', 'create', 'store']);
 
     // KEAMANAN: master data (kategori, supplier, CRUD barang) hanya admin
     Route::middleware('role:admin')->group(function () {

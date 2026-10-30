@@ -24,6 +24,10 @@
                        class="block px-3 py-2 rounded {{ request()->routeIs('items.*') ? 'bg-slate-700' : 'hover:bg-slate-700' }}">
                         Barang
                     </a>
+                    <a href="{{ route('transactions.index') }}"
+                       class="block px-3 py-2 rounded {{ request()->routeIs('transactions.*') ? 'bg-slate-700' : 'hover:bg-slate-700' }}">
+                        Transaksi
+                    </a>
                     {{-- Menu master data tampil hanya untuk admin. Proteksi asli ada di middleware route. --}}
                     @if (auth()->user()->isAdmin())
                         <a href="{{ route('categories.index') }}"

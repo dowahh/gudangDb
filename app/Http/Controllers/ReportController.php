@@ -20,9 +20,13 @@ class ReportController extends Controller
         // total nilai gudang dari SEMUA barang
         $totalValue = (float) $items->sum(fn (Item $item) => $item->stock * $item->price);
 
+        // jumlah barang yang stoknya di bawah atau sama dengan batas minimum
+        $lowCount = $items->filter(fn (Item $item) => $item->isLowStock())->count();
+
         return view('reports.stock', [
             'items' => $items,
             'totalValue' => $totalValue,
+            'lowCount' => $lowCount,
         ]);
     }
 }

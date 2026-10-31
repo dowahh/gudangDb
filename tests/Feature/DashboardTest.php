@@ -13,8 +13,9 @@ test('dashboard menampilkan statistik dan bisa dibuka staff', function () {
 
     $response->assertOk();
     $response->assertSee('Total Jenis Barang');
-    $response->assertSee('Total Nilai Stok');
+    $response->assertSee('Nilai Stok');
     $response->assertSee('Stok Menipis');
+    $response->assertSee('Transaksi Hari Ini');
     $response->assertSee('transaction-chart');
     // total nilai = (10*5000) + (1*1000) = 51000
     $response->assertSee(number_format(51000, 0, ',', '.'));
@@ -52,6 +53,8 @@ test('endpoint chart mengembalikan 7 hari data json', function () {
     $todayIndex = count($data['labels']) - 1;
     expect($data['masuk'][$todayIndex])->toBe(4);
     expect($data['keluar'][$todayIndex])->toBe(2);
+    // format label: "30 Okt" (bukan "30/10")
+    expect($data['labels'][$todayIndex])->toMatch('/^\d{2} [A-Za-z]{3}$/');
 });
 
 test('search barang mengembalikan json nama atau sku', function () {

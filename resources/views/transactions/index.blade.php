@@ -3,89 +3,93 @@
 @section('title', 'Riwayat Transaksi')
 
 @section('content')
-    <div class="flex items-center justify-between mb-4">
-        <h1 class="text-xl font-semibold">Riwayat Transaksi</h1>
-        <a href="{{ route('transactions.create') }}"
-           class="rounded bg-slate-800 text-white px-4 py-2 text-sm hover:bg-slate-700">
-            Catat Transaksi
-        </a>
-    </div>
-
-    @if (! auth()->user()->isAdmin())
-        <p class="mb-4 text-sm text-gray-600">Anda hanya melihat transaksi yang Anda catat sendiri.</p>
-    @endif
-
-    <form method="GET" action="{{ route('transactions.index') }}" class="mb-4 flex flex-wrap items-end gap-3">
+    <header class="page-header">
         <div>
-            <label for="type" class="block text-sm font-medium mb-1">Tipe</label>
-            <select id="type" name="type"
-                    class="rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-500">
+            <h1 class="page-title">Riwayat Transaksi</h1>
+            @if (! auth()->user()->isAdmin())
+                <p class="page-meta">Anda hanya melihat transaksi yang Anda catat sendiri.</p>
+            @else
+                <p class="page-meta">Semua transaksi stok</p>
+            @endif
+        </div>
+        <a href="{{ route('transactions.create') }}" class="btn btn-primary">Catat Transaksi</a>
+    </header>
+
+    <form method="GET" action="{{ route('transactions.index') }}" class="filter-bar">
+        <div class="field">
+            <label for="type" class="label">Tipe</label>
+            <select id="type" name="type" class="input">
                 <option value="">Semua</option>
                 <option value="masuk" @selected(request('type') === 'masuk')>Masuk</option>
                 <option value="keluar" @selected(request('type') === 'keluar')>Keluar</option>
             </select>
         </div>
-        <div>
-            <label for="start_date" class="block text-sm font-medium mb-1">Dari Tanggal</label>
-            <input type="date" id="start_date" name="start_date" value="{{ request('start_date') }}"
-                   class="rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-500">
+        <div class="field">
+            <label for="start_date" class="label">Dari Tanggal</label>
+            <input type="date" id="start_date" name="start_date" value="{{ request('start_date') }}" class="input">
         </div>
-        <div>
-            <label for="end_date" class="block text-sm font-medium mb-1">Sampai Tanggal</label>
-            <input type="date" id="end_date" name="end_date" value="{{ request('end_date') }}"
-                   class="rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-500">
+        <div class="field">
+            <label for="end_date" class="label">Sampai Tanggal</label>
+            <input type="date" id="end_date" name="end_date" value="{{ request('end_date') }}" class="input">
         </div>
-        <div class="flex gap-2">
-            <button type="submit" class="rounded bg-slate-800 text-white px-4 py-2 text-sm hover:bg-slate-700">
-                Filter
-            </button>
-            <a href="{{ route('transactions.index') }}"
-               class="rounded border border-gray-300 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50">
-                Reset
-            </a>
+        <div class="actions">
+            <button type="submit" class="btn btn-primary">Filter</button>
+            <a href="{{ route('transactions.index') }}" class="btn btn-secondary">Reset</a>
         </div>
     </form>
 
-    <div class="bg-white rounded border border-gray-200 overflow-hidden">
-        <table class="w-full text-sm">
-            <thead class="bg-gray-50 text-left text-gray-600">
-                <tr>
-                    <th class="px-4 py-3 font-medium">Tanggal</th>
-                    <th class="px-4 py-3 font-medium">Barang</th>
-                    <th class="px-4 py-3 font-medium">Tipe</th>
-                    <th class="px-4 py-3 font-medium">Jumlah</th>
-                    <th class="px-4 py-3 font-medium">Supplier</th>
-                    <th class="px-4 py-3 font-medium">Catatan</th>
-                    <th class="px-4 py-3 font-medium">Dicatat Oleh</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-100">
-                @forelse ($transactions as $transaction)
-                    <tr>
-                        <td class="px-4 py-3">{{ $transaction->transaction_date->format('d/m/Y') }}</td>
-                        <td class="px-4 py-3">{{ $transaction->item->name }}</td>
-                        <td class="px-4 py-3">
-                            @if ($transaction->type === 'masuk')
-                                <span class="rounded bg-green-50 border border-green-200 px-1.5 py-0.5 text-xs text-green-800">Masuk</span>
-                            @else
-                                <span class="rounded bg-red-50 border border-red-200 px-1.5 py-0.5 text-xs text-red-800">Keluar</span>
-                            @endif
-                        </td>
-                        <td class="px-4 py-3">{{ $transaction->qty }}</td>
-                        <td class="px-4 py-3">{{ $transaction->supplier?->name ?? '-' }}</td>
-                        <td class="px-4 py-3">{{ $transaction->note ?? '-' }}</td>
-                        <td class="px-4 py-3">{{ $transaction->user->name }}</td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="7" class="px-4 py-6 text-center text-gray-500">Belum ada transaksi.</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
+    <section class="kartu-label">
+        <div class="kartu-label-header">
+            <span>Riwayat Transaksi</span>
+            <span>{{ $transactions->count() }} baris</span>
+        </div>
+        <div class="kartu-label-body-flush">
+            <div class="table-wrap table-wrap-flush">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Tanggal</th>
+                            <th>Barang</th>
+                            <th>Tipe</th>
+                            <th class="num">Jumlah</th>
+                            <th>Supplier</th>
+                            <th>Catatan</th>
+                            <th>Dicatat Oleh</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($transactions as $transaction)
+                            <tr>
+                                <td class="mono">{{ $transaction->transaction_date->format('d/m/Y') }}</td>
+                                <td><strong>{{ $transaction->item->name }}</strong></td>
+                                <td>
+                                    <span class="stempel stempel-{{ $transaction->type }}">
+                                        {{ $transaction->type }}
+                                    </span>
+                                </td>
+                                <td class="num"><span class="mono">{{ $transaction->qty }}</span></td>
+                                <td class="muted">{{ $transaction->supplier?->name ?? '—' }}</td>
+                                <td class="muted">{{ $transaction->note ?? '—' }}</td>
+                                <td class="muted">{{ $transaction->user->name }}</td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="7" class="empty-state text-center">
+                                    @if (request()->filled('type') || request()->filled('start_date') || request()->filled('end_date'))
+                                        Tidak ada transaksi yang cocok dengan filter ini.
+                                    @else
+                                        Belum ada transaksi. Catat transaksi pertama lewat tombol di kanan atas.
+                                    @endif
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
 
-    <div class="mt-4">
+    <div class="pagination">
         {{ $transactions->links() }}
     </div>
 @endsection

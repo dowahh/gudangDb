@@ -3,30 +3,35 @@
 @section('title', 'Tambah Kategori')
 
 @section('content')
-    <h1 class="text-xl font-semibold mb-4">Tambah Kategori</h1>
+    <header class="page-header">
+        <div>
+            <h1 class="page-title">Tambah Kategori</h1>
+            <p class="page-meta">Kategori memudahkan pencarian barang</p>
+        </div>
+        <div class="page-header-aside">
+            <span class="page-date">{{ now()->format('d/m/Y') }}</span>
+            <a href="{{ route('categories.index') }}" class="btn btn-secondary">Kembali</a>
+        </div>
+    </header>
 
-    <div class="bg-white rounded border border-gray-200 p-6 max-w-lg">
-        @if ($errors->any())
-            <div class="mb-4 rounded border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800">
-                {{ $errors->first() }}
-            </div>
-        @endif
+    <div class="kartu-label form-panel">
+        <div class="kartu-label-header">Form Tambah Kategori</div>
 
-        <form method="POST" action="{{ route('categories.store') }}" class="space-y-4">
+        <form method="POST" action="{{ route('categories.store') }}" class="form-grid">
             {{-- KEAMANAN: @csrf melindungi form dari CSRF --}}
             @csrf
 
             <div>
-                <label for="name" class="block text-sm font-medium mb-1">Nama Kategori</label>
-                <input type="text" id="name" name="name" value="{{ old('name') }}" required
-                       class="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-500">
+                <label for="name" class="label">Nama Kategori</label>
+                <input type="text" id="name" name="name" value="{{ old('name') }}" required class="input">
+                @error('name')
+                    <p class="error-text">{{ $message }}</p>
+                @enderror
             </div>
 
-            <div class="flex items-center gap-3">
-                <button type="submit" class="rounded bg-slate-800 text-white px-4 py-2 text-sm hover:bg-slate-700">
-                    Simpan
-                </button>
-                <a href="{{ route('categories.index') }}" class="text-sm text-gray-600 underline">Batal</a>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Tambah kategori</button>
+                <a href="{{ route('categories.index') }}" class="link">Batal</a>
             </div>
         </form>
     </div>

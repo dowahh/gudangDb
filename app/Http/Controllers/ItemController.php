@@ -72,10 +72,10 @@ class ItemController extends Controller
     public function store(ItemStoreRequest $request): RedirectResponse
     {
         // stok tidak diisi dari form — diisi 0, lalu berubah lewat transaksi stok
-        Item::create($request->validated());
+        $item = Item::create($request->validated());
 
         return redirect()->route('items.index')
-            ->with('status', 'Barang berhasil ditambahkan.');
+            ->with('status', "Barang {$item->name} berhasil ditambahkan.");
     }
 
     public function edit(Item $item): View
@@ -91,19 +91,19 @@ class ItemController extends Controller
         $item->update($request->validated());
 
         return redirect()->route('items.index')
-            ->with('status', 'Barang berhasil diperbarui.');
+            ->with('status', "Barang {$item->name} berhasil diperbarui.");
     }
 
     public function destroy(Item $item): RedirectResponse
     {
         // cek relasi dulu supaya tidak error 500 kena foreign key
         if ($item->stockTransactions()->exists()) {
-            return back()->with('error', 'Barang tidak bisa dihapus karena masih punya riwayat transaksi stok.');
+            return back()->with('error', "Barang {$item->name} tidak bisa dihapus karena masih punya riwayat transaksi stok.");
         }
 
         $item->delete();
 
         return redirect()->route('items.index')
-            ->with('status', 'Barang berhasil dihapus.');
+            ->with('status', "Barang {$item->name} berhasil dihapus.");
     }
 }

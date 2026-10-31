@@ -3,48 +3,89 @@
 @section('title', 'Laporan Stok')
 
 @section('content')
-    <h1 class="text-xl font-semibold mb-1">Laporan Stok</h1>
-    <p class="text-sm text-gray-600 mb-4">Rekap seluruh barang dan total nilai gudang saat ini.</p>
+    <header class="page-header">
+        <div>
+            <h1 class="page-title">Laporan Stok</h1>
+            <p class="page-meta">Rekap seluruh barang dan total nilai gudang saat ini</p>
+        </div>
+        <div class="page-header-aside">
+            <span class="page-date">{{ now()->format('d/m/Y') }}</span>
+        </div>
+    </header>
 
-    <div class="bg-white rounded border border-gray-200 overflow-hidden">
-        <table class="w-full text-sm">
-            <thead class="bg-gray-50 text-left text-gray-600">
-                <tr>
-                    <th class="px-4 py-3 font-medium">SKU</th>
-                    <th class="px-4 py-3 font-medium">Nama</th>
-                    <th class="px-4 py-3 font-medium">Kategori</th>
-                    <th class="px-4 py-3 font-medium">Stok</th>
-                    <th class="px-4 py-3 font-medium">Harga</th>
-                    <th class="px-4 py-3 font-medium">Nilai Stok</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-100">
-                @forelse ($items as $item)
-                    <tr>
-                        <td class="px-4 py-3">{{ $item->sku }}</td>
-                        <td class="px-4 py-3">{{ $item->name }}</td>
-                        <td class="px-4 py-3">{{ $item->category->name }}</td>
-                        <td class="px-4 py-3">
-                            {{ $item->stock }}
-                            @if ($item->isLowStock())
-                                <span class="ml-1 rounded bg-red-50 border border-red-200 px-1.5 py-0.5 text-xs text-red-700">Menipis</span>
-                            @endif
-                        </td>
-                        <td class="px-4 py-3">Rp {{ number_format($item->price, 0, ',', '.') }}</td>
-                        <td class="px-4 py-3">Rp {{ number_format($item->stock * $item->price, 0, ',', '.') }}</td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="6" class="px-4 py-6 text-center text-gray-500">Belum ada barang.</td>
-                    </tr>
-                @endforelse
-            </tbody>
-            <tfoot>
-                <tr class="bg-gray-50 font-semibold">
-                    <td colspan="5" class="px-4 py-3 text-right">Total Nilai Gudang</td>
-                    <td class="px-4 py-3">Rp {{ number_format($totalValue, 0, ',', '.') }}</td>
-                </tr>
-            </tfoot>
-        </table>
-    </div>
+    {{-- ringkasan angka: total barang, nilai gudang, jumlah menipis --}}
+    <section class="kartu-label section-block">
+        <div class="kartu-label-header">
+            <span>Ringkasan Stok</span>
+            <span>Semua Barang</span>
+        </div>
+        <div class="angka-row">
+            <div class="angka-item">
+                <span class="angka-label">Total Jenis Barang</span>
+                <span class="angka-besar">{{ $items->count() }}</span>
+            </div>
+            <div class="angka-item">
+                <span class="angka-label">Nilai Gudang</span>
+                <span class="angka-besar is-currency">Rp&nbsp;{{ number_format($totalValue, 0, ',', '.') }}</span>
+            </div>
+            <div class="angka-item">
+                <span class="angka-label">Jumlah Menipis</span>
+                <span class="angka-besar {{ $lowCount > 0 ? 'is-alert' : '' }}">{{ $lowCount }}</span>
+            </div>
+        </div>
+    </section>
+
+    <div class="pita-hazard pita-hazard-slim section-block" aria-hidden="true"></div>
+
+    <section class="kartu-label">
+        <div class="kartu-label-header">
+            <span>Daftar Barang</span>
+            <span>{{ $items->count() }} baris</span>
+        </div>
+        <div class="kartu-label-body-flush">
+            <div class="table-wrap table-wrap-flush">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>SKU</th>
+                            <th>Nama</th>
+                            <th>Kategori</th>
+                            <th class="num">Stok</th>
+                            <th class="num">Harga</th>
+                            <th class="num">Nilai Stok</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($items as $item)
+                            <tr class="{{ $item->isLowStock() ? 'is-low' : '' }}">
+                                <td class="mono">{{ $item->sku }}</td>
+                                <td><strong>{{ $item->name }}</strong></td>
+                                <td class="muted">{{ $item->category->name }}</td>
+                                <td class="num">
+                                    <span class="mono">{{ $item->stock }}</span>
+                                    @if ($item->isLowStock())
+                                        <span class="stempel stempel-menipis">Menipis</span>
+                                    @endif
+                                </td>
+                                <td class="num">Rp&nbsp;<span class="mono">{{ number_format($item->price, 0, ',', '.') }}</span></td>
+                                <td class="num">Rp&nbsp;<span class="mono">{{ number_format($item->stock * $item->price, 0, ',', '.') }}</span></td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="empty-state text-center">
+                                    Belum ada barang di katalog. Tambah barang dulu lewat menu Barang.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="5" class="num">Total Nilai Gudang</td>
+                            <td class="num">Rp&nbsp;<span class="mono">{{ number_format($totalValue, 0, ',', '.') }}</span></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </section>
 @endsection

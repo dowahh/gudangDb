@@ -56,14 +56,14 @@ class StockTransactionController extends Controller
         $type = $request->string('type')->toString();
         $qty = $request->integer('qty');
 
-        DB::transaction(function () use ($request, $type, $qty) {
+        $itemName = DB::transaction(function () use ($request, $type, $qty) {
             // KEAMANAN: kunci baris barang supaya dua transaksi bersamaan
             // tidak membuat stok salah hitung (race condition)
             $item = Item::query()->lockForUpdate()->findOrFail($request->integer('item_id'));
 
             if ($type === 'keluar' && $qty > $item->stock) {
                 throw ValidationException::withMessages([
-                    'qty' => "Stok {$item->name} tidak mencukupi. Stok saat ini: {$item->stock}.",
+                    'qty' => "Stok tidak mencukupi. Sisa {$item->stock}, kamu minta {$qty}.",
                 ]);
             }
 
@@ -83,9 +83,11 @@ class StockTransactionController extends Controller
                 ? $item->stock + $qty
                 : $item->stock - $qty;
             $item->save();
+
+            return $item->name;
         });
 
         return redirect()->route('transactions.index')
-            ->with('status', 'Transaksi stok berhasil dicatat.');
+            ->with('status', "Transaksi {$itemName} ({$type}) berhasil dicatat.");
     }
 }

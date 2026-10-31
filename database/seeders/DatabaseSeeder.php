@@ -60,21 +60,21 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $admin = User::create([
-            'name' => 'Budi Santoso',
+            'name' => 'Robby Fabian',
             'email' => 'admin@gudang.test',
             'password' => 'password', // plain; cast 'hashed' di model yang meng-hash
             'role' => 'admin',
         ]);
 
         $staffAndi = User::create([
-            'name' => 'Andi Wijaya',
+            'name' => 'Deni Kurniawan',
             'email' => 'andi@gudang.test',
             'password' => 'password',
             'role' => 'staff',
         ]);
 
         $staffSari = User::create([
-            'name' => 'Sari Rahayu',
+            'name' => 'Maya Puspita',
             'email' => 'sari@gudang.test',
             'password' => 'password',
             'role' => 'staff',

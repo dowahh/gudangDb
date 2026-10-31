@@ -29,10 +29,10 @@ class CategoryController extends Controller
 
     public function store(CategoryStoreRequest $request): RedirectResponse
     {
-        Category::create($request->validated());
+        $category = Category::create($request->validated());
 
         return redirect()->route('categories.index')
-            ->with('status', 'Kategori berhasil ditambahkan.');
+            ->with('status', "Kategori {$category->name} berhasil ditambahkan.");
     }
 
     public function edit(Category $category): View
@@ -47,19 +47,19 @@ class CategoryController extends Controller
         $category->update($request->validated());
 
         return redirect()->route('categories.index')
-            ->with('status', 'Kategori berhasil diperbarui.');
+            ->with('status', "Kategori {$category->name} berhasil diperbarui.");
     }
 
     public function destroy(Category $category): RedirectResponse
     {
         // cek relasi dulu supaya tidak error 500 kena foreign key
         if ($category->items()->exists()) {
-            return back()->with('error', 'Kategori tidak bisa dihapus karena masih dipakai oleh barang.');
+            return back()->with('error', "Kategori {$category->name} tidak bisa dihapus karena masih dipakai oleh barang.");
         }
 
         $category->delete();
 
         return redirect()->route('categories.index')
-            ->with('status', 'Kategori berhasil dihapus.');
+            ->with('status', "Kategori {$category->name} berhasil dihapus.");
     }
 }

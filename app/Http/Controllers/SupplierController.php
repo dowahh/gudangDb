@@ -29,10 +29,10 @@ class SupplierController extends Controller
 
     public function store(SupplierStoreRequest $request): RedirectResponse
     {
-        Supplier::create($request->validated());
+        $supplier = Supplier::create($request->validated());
 
         return redirect()->route('suppliers.index')
-            ->with('status', 'Supplier berhasil ditambahkan.');
+            ->with('status', "Supplier {$supplier->name} berhasil ditambahkan.");
     }
 
     public function edit(Supplier $supplier): View
@@ -47,19 +47,19 @@ class SupplierController extends Controller
         $supplier->update($request->validated());
 
         return redirect()->route('suppliers.index')
-            ->with('status', 'Supplier berhasil diperbarui.');
+            ->with('status', "Supplier {$supplier->name} berhasil diperbarui.");
     }
 
     public function destroy(Supplier $supplier): RedirectResponse
     {
         // cek relasi dulu supaya tidak error 500 kena foreign key
         if ($supplier->stockTransactions()->exists()) {
-            return back()->with('error', 'Supplier tidak bisa dihapus karena masih dipakai oleh transaksi stok.');
+            return back()->with('error', "Supplier {$supplier->name} tidak bisa dihapus karena masih dipakai oleh transaksi stok.");
         }
 
         $supplier->delete();
 
         return redirect()->route('suppliers.index')
-            ->with('status', 'Supplier berhasil dihapus.');
+            ->with('status', "Supplier {$supplier->name} berhasil dihapus.");
     }
 }

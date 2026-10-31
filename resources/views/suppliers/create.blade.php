@@ -3,42 +3,51 @@
 @section('title', 'Tambah Supplier')
 
 @section('content')
-    <h1 class="text-xl font-semibold mb-4">Tambah Supplier</h1>
+    <header class="page-header">
+        <div>
+            <h1 class="page-title">Tambah Supplier</h1>
+            <p class="page-meta">Supplier terhubung ke transaksi barang masuk</p>
+        </div>
+        <div class="page-header-aside">
+            <span class="page-date">{{ now()->format('d/m/Y') }}</span>
+            <a href="{{ route('suppliers.index') }}" class="btn btn-secondary">Kembali</a>
+        </div>
+    </header>
 
-    <div class="bg-white rounded border border-gray-200 p-6 max-w-lg">
-        @if ($errors->any())
-            <div class="mb-4 rounded border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800">
-                {{ $errors->first() }}
-            </div>
-        @endif
+    <div class="kartu-label form-panel">
+        <div class="kartu-label-header">Form Tambah Supplier</div>
 
-        <form method="POST" action="{{ route('suppliers.store') }}" class="space-y-4">
+        <form method="POST" action="{{ route('suppliers.store') }}" class="form-grid">
             {{-- KEAMANAN: @csrf melindungi form dari CSRF --}}
             @csrf
 
             <div>
-                <label for="name" class="block text-sm font-medium mb-1">Nama Supplier</label>
-                <input type="text" id="name" name="name" value="{{ old('name') }}" required
-                       class="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-500">
+                <label for="name" class="label">Nama Supplier</label>
+                <input type="text" id="name" name="name" value="{{ old('name') }}" required class="input">
+                @error('name')
+                    <p class="error-text">{{ $message }}</p>
+                @enderror
             </div>
 
             <div>
-                <label for="phone" class="block text-sm font-medium mb-1">Telepon</label>
-                <input type="text" id="phone" name="phone" value="{{ old('phone') }}"
-                       class="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-500">
+                <label for="phone" class="label">Telepon</label>
+                <input type="text" id="phone" name="phone" value="{{ old('phone') }}" class="input mono">
+                @error('phone')
+                    <p class="error-text">{{ $message }}</p>
+                @enderror
             </div>
 
             <div>
-                <label for="address" class="block text-sm font-medium mb-1">Alamat</label>
-                <textarea id="address" name="address" rows="3"
-                          class="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-500">{{ old('address') }}</textarea>
+                <label for="address" class="label">Alamat</label>
+                <textarea id="address" name="address" rows="3" class="input">{{ old('address') }}</textarea>
+                @error('address')
+                    <p class="error-text">{{ $message }}</p>
+                @enderror
             </div>
 
-            <div class="flex items-center gap-3">
-                <button type="submit" class="rounded bg-slate-800 text-white px-4 py-2 text-sm hover:bg-slate-700">
-                    Simpan
-                </button>
-                <a href="{{ route('suppliers.index') }}" class="text-sm text-gray-600 underline">Batal</a>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Tambah supplier</button>
+                <a href="{{ route('suppliers.index') }}" class="link">Batal</a>
             </div>
         </form>
     </div>

@@ -26,6 +26,10 @@ class DashboardController extends Controller
             ->orderBy('name')
             ->get();
 
+        $todayTransactions = StockTransaction::query()
+            ->whereDate('transaction_date', today())
+            ->count();
+
         $recentQuery = StockTransaction::query()
             ->with(['item', 'user'])
             ->orderByDesc('transaction_date')
@@ -39,11 +43,17 @@ class DashboardController extends Controller
 
         $recentTransactions = $recentQuery->limit(5)->get();
 
+        // transaksi hari ini (seluruh gudang)
+        $todayTransactions = StockTransaction::query()
+            ->whereDate('transaction_date', today())
+            ->count();
+
         return view('dashboard', [
             'totalItems' => $totalItems,
             'totalValue' => $totalValue,
             'lowStockItems' => $lowStockItems,
             'recentTransactions' => $recentTransactions,
+            'todayTransactions' => $todayTransactions,
         ]);
     }
 
@@ -58,7 +68,7 @@ class DashboardController extends Controller
 
         for ($i = 6; $i >= 0; $i--) {
             $date = now()->subDays($i)->toDateString();
-            $labels[] = now()->subDays($i)->format('d/m');
+            $labels[] = self::formatLabelTanggal(now()->subDays($i));
 
             $dayTransactions = StockTransaction::query()
                 ->whereDate('transaction_date', $date)
@@ -73,5 +83,15 @@ class DashboardController extends Controller
             'masuk' => $masuk,
             'keluar' => $keluar,
         ]);
+    }
+
+    /**
+     * Format label grafik: "30 Okt" (bulan Indonesia tanpa extension).
+     */
+    private static function formatLabelTanggal($date): string
+    {
+        $bulan = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+
+        return $date->format('d').' '.$bulan[(int) $date->format('n') - 1];
     }
 }

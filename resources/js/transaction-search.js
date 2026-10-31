@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultsList = document.getElementById('item-search-results');
     const hiddenItemId = document.getElementById('item_id');
     const selectedInfo = document.getElementById('item-selected-info');
+    const stockInfo = document.getElementById('item-stock');
     const clearButton = document.getElementById('item-clear');
 
     if (!searchInput || !resultsList || !hiddenItemId) {
@@ -31,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     resultsList.innerHTML = '';
 
                     if (items.length === 0) {
-                        resultsList.innerHTML = '<li class="px-3 py-2 text-sm text-gray-500">Barang tidak ditemukan.</li>';
+                        resultsList.innerHTML = '<li class="empty-row">Barang tidak ditemukan.</li>';
                         resultsList.hidden = false;
                         return;
                     }
@@ -40,13 +41,16 @@ document.addEventListener('DOMContentLoaded', () => {
                         const li = document.createElement('li');
                         const button = document.createElement('button');
                         button.type = 'button';
-                        button.className = 'block w-full text-left px-3 py-2 text-sm hover:bg-gray-50';
                         button.textContent = `${item.name} (${item.sku}) — stok ${item.stock}`;
 
                         button.addEventListener('click', () => {
                             hiddenItemId.value = item.id;
                             searchInput.value = item.name;
-                            selectedInfo.textContent = `Terpilih: ${item.name} (${item.sku}), stok ${item.stock}`;
+                            selectedInfo.textContent = `Terpilih: ${item.name} (${item.sku})`;
+                            if (stockInfo) {
+                                stockInfo.textContent = `Stok tersedia: ${item.stock}`;
+                                stockInfo.hidden = false;
+                            }
                             resultsList.hidden = true;
                             resultsList.innerHTML = '';
                         });
@@ -65,6 +69,10 @@ document.addEventListener('DOMContentLoaded', () => {
             hiddenItemId.value = '';
             searchInput.value = '';
             selectedInfo.textContent = '';
+            if (stockInfo) {
+                stockInfo.textContent = '';
+                stockInfo.hidden = true;
+            }
             resultsList.hidden = true;
             resultsList.innerHTML = '';
         });

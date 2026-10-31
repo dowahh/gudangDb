@@ -3,85 +3,146 @@
 @section('title', 'Dashboard')
 
 @section('content')
-    <h1 class="text-xl font-semibold mb-1">Dashboard</h1>
-    <p class="text-sm text-gray-600 mb-6">
-        Halo, <span class="font-medium">{{ auth()->user()->name }}</span>
-        ({{ auth()->user()->role }})
-    </p>
+    @php
+        $hari = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+        $bulan = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+        $tanggalHariIni = $hari[now()->dayOfWeek] . ', ' . now()->day . ' ' . $bulan[now()->month - 1] . ' ' . now()->year;
 
-    {{-- Kartu statistik --}}
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-        <div class="bg-white rounded border border-gray-200 p-4">
-            <p class="text-sm text-gray-500">Total Jenis Barang</p>
-            <p class="text-2xl font-semibold mt-1">{{ $totalItems }}</p>
-        </div>
-        <div class="bg-white rounded border border-gray-200 p-4">
-            <p class="text-sm text-gray-500">Total Nilai Stok</p>
-            <p class="text-2xl font-semibold mt-1">Rp {{ number_format($totalValue, 0, ',', '.') }}</p>
-        </div>
-        <div class="bg-white rounded border border-gray-200 p-4">
-            <p class="text-sm text-gray-500">Stok Menipis</p>
-            <p class="text-2xl font-semibold mt-1 text-red-700">{{ $lowStockItems->count() }}</p>
-        </div>
-    </div>
+        // format nilai stok ringkas: "Rp 744,2 jt" / "Rp 1,2 mrd", judul hover = angka penuh
+        $nilaiPenuh = 'Rp ' . number_format($totalValue, 0, ',', '.');
+        if ($totalValue >= 1_000_000_000) {
+            $nilaiRingkas = 'Rp ' . number_format($totalValue / 1_000_000_000, 1, ',', '.') . ' mrd';
+        } elseif ($totalValue >= 1_000_000) {
+            $nilaiRingkas = 'Rp ' . number_format($totalValue / 1_000_000, 1, ',', '.') . ' jt';
+        } else {
+            $nilaiRingkas = $nilaiPenuh;
+        }
+    @endphp
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {{-- Grafik 7 hari --}}
-        <div class="bg-white rounded border border-gray-200 p-4">
-            <h2 class="text-sm font-semibold mb-3">Transaksi Masuk vs Keluar (7 Hari)</h2>
-            {{-- data-url dibaca JS untuk fetch data chart dari endpoint JSON --}}
-            <canvas id="transaction-chart" height="200"
-                    data-url="{{ route('dashboard.chart') }}"></canvas>
+    <header class="page-header">
+        <div>
+            <h1 class="page-title">Dashboard</h1>
+            <p class="page-meta">{{ auth()->user()->name }} · {{ auth()->user()->role }}</p>
         </div>
+        <div class="page-header-aside">
+            <span class="page-date">{{ $tanggalHariIni }}</span>
+        </div>
+    </header>
 
-        {{-- Peringatan stok menipis --}}
-        <div class="bg-white rounded border border-gray-200 p-4">
-            <h2 class="text-sm font-semibold mb-3">Peringatan Stok Menipis</h2>
+    {{-- ringkasan angka: satu panel label gudang --}}
+    <section class="kartu-label section-block">
+        <div class="kartu-label-header">
+            <span>Ringkasan Gudang</span>
+            <span>Hari Ini</span>
+        </div>
+        <div class="angka-row">
+            <div class="angka-item">
+                <span class="angka-label">Total Jenis Barang</span>
+                <span class="angka-besar">{{ $totalItems }}</span>
+            </div>
+            <div class="angka-item">
+                <span class="angka-label">Nilai Stok</span>
+                <span class="angka-besar is-currency" title="{{ $nilaiPenuh }}">{{ $nilaiRingkas }}</span>
+            </div>
+            <div class="angka-item">
+                <span class="angka-label">Stok Menipis</span>
+                <span class="angka-besar {{ $lowStockItems->count() > 0 ? 'is-alert' : '' }}">{{ $lowStockItems->count() }}</span>
+            </div>
+            <div class="angka-item">
+                <span class="angka-label">Transaksi Hari Ini</span>
+                <span class="angka-besar">{{ $todayTransactions }}</span>
+            </div>
+        </div>
+    </section>
+
+    <div class="pita-hazard pita-hazard-slim section-block" aria-hidden="true"></div>
+
+    <div class="dashboard-grid">
+        {{-- grafik 7 hari --}}
+        <section class="kartu-label">
+            <div class="kartu-label-header">
+                <span>Transaksi 7 Hari</span>
+                <span>Masuk / Keluar</span>
+            </div>
+            <div class="kartu-label-body">
+                <div class="chart-legend">
+                    <span><i class="swatch-masuk"></i>Masuk</span>
+                    <span><i class="swatch-keluar"></i>Keluar</span>
+                </div>
+                <div class="chart-frame">
+                    {{-- data-url dibaca JS untuk fetch data chart dari endpoint JSON --}}
+                    <canvas id="transaction-chart"
+                            data-url="{{ route('dashboard.chart') }}"></canvas>
+                </div>
+            </div>
+        </section>
+
+        {{-- stok menipis --}}
+        <section class="kartu-label">
+            <div class="kartu-label-header">
+                <span>
+                    <span class="stempel stempel-menipis">Menipis</span>
+                    Stok Menipis — Segera Order
+                </span>
+                <span>{{ $lowStockItems->count() }} item</span>
+            </div>
             @if ($lowStockItems->isEmpty())
-                <p class="text-sm text-gray-500">Semua stok masih di atas minimum.</p>
+                <p class="empty-state">Semua stok aman. Tidak ada yang perlu dipesan.</p>
             @else
-                <ul class="divide-y divide-gray-100 text-sm">
+                <ul class="list-plain">
                     @foreach ($lowStockItems as $item)
-                        <li class="py-2 flex justify-between gap-2">
-                            <span>{{ $item->name }} <span class="text-gray-400">({{ $item->sku }})</span></span>
-                            <span class="whitespace-nowrap text-red-700">
-                                {{ $item->stock }} / min {{ $item->min_stock }}
+                        <li class="is-low">
+                            <span>
+                                <span class="item-name">{{ $item->name }}</span>
+                                <span class="item-sku">{{ $item->sku }}</span>
                             </span>
+                            <span class="qty-low">sisa <strong>{{ $item->stock }}</strong> / min {{ $item->min_stock }}</span>
                         </li>
                     @endforeach
                 </ul>
             @endif
-        </div>
+        </section>
     </div>
 
-    {{-- 5 transaksi terakhir --}}
-    <div class="bg-white rounded border border-gray-200 mt-6 overflow-hidden">
-        <h2 class="text-sm font-semibold px-4 pt-4 pb-2">5 Transaksi Terakhir</h2>
-        <table class="w-full text-sm">
-            <thead class="bg-gray-50 text-left text-gray-600">
-                <tr>
-                    <th class="px-4 py-3 font-medium">Tanggal</th>
-                    <th class="px-4 py-3 font-medium">Barang</th>
-                    <th class="px-4 py-3 font-medium">Tipe</th>
-                    <th class="px-4 py-3 font-medium">Jumlah</th>
-                    <th class="px-4 py-3 font-medium">Oleh</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-100">
-                @forelse ($recentTransactions as $transaction)
-                    <tr>
-                        <td class="px-4 py-3">{{ $transaction->transaction_date->format('d/m/Y') }}</td>
-                        <td class="px-4 py-3">{{ $transaction->item->name }}</td>
-                        <td class="px-4 py-3">{{ $transaction->type }}</td>
-                        <td class="px-4 py-3">{{ $transaction->qty }}</td>
-                        <td class="px-4 py-3">{{ $transaction->user->name }}</td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="5" class="px-4 py-6 text-center text-gray-500">Belum ada transaksi.</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
+    {{-- transaksi terakhir --}}
+    <section class="kartu-label">
+        <div class="kartu-label-header">
+            <span>Transaksi Terakhir</span>
+            <span>5 Baris</span>
+        </div>
+        <div class="kartu-label-body-flush">
+            <div class="table-wrap table-wrap-flush">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Tanggal</th>
+                            <th>Barang</th>
+                            <th>Tipe</th>
+                            <th class="num">Jumlah</th>
+                            <th>Oleh</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($recentTransactions as $transaction)
+                            <tr>
+                                <td class="mono">{{ $transaction->transaction_date->format('d/m/Y') }}</td>
+                                <td>{{ $transaction->item->name }}</td>
+                                <td>
+                                    <span class="stempel stempel-{{ $transaction->type }}">
+                                        {{ $transaction->type }}
+                                    </span>
+                                </td>
+                                <td class="num mono">{{ $transaction->qty }}</td>
+                                <td class="muted">{{ $transaction->user->name }}</td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" class="text-center py-8 muted">Belum ada transaksi.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
 @endsection

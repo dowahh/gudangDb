@@ -1,1 +1,1471 @@
 @import 'tailwindcss';
+
+/* =========================================================
+   Token desain — identitas "label gudang"
+   ========================================================= */
+:root {
+    --bg: #f6f5f1;
+    --surface: #ffffff;
+    --text: #141414;
+    --text-secondary: #5e5675;
+    --border: #d4cfe0;
+    --accent: #e85d04;
+    --accent-deep: #9a3412;
+    --accent-soft: #fce8dc;
+    --danger: #b42318;
+    --sidebar-bg: #141414;
+    --radius: 2px;
+    --sidebar-w: 220px;
+
+    /* token tambahan label gudang */
+    --kraft: #e7dfcb;
+    --aksen-pucat: #fce8dc;
+    --garis: 2px solid var(--ink);
+    --ink: #141414;
+    --krem: #f0e6d2;
+}
+
+/* =========================================================
+   Dasar
+   ========================================================= */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.55;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+}
+
+a {
+    color: inherit;
+}
+
+.mono {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+}
+
+.num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.muted {
+    color: var(--text-secondary);
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-sm {
+    font-size: 0.8125rem;
+    margin: 0;
+}
+
+.py-8 {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+/* =========================================================
+   Signature — pita hazard (satu-satunya gradient di app)
+   ========================================================= */
+.pita-hazard {
+    height: 10px;
+    width: 100%;
+    background: repeating-linear-gradient(
+        135deg,
+        var(--ink) 0 8px,
+        var(--accent) 8px 16px
+    );
+    flex-shrink: 0;
+}
+
+.pita-hazard-slim {
+    height: 6px;
+}
+
+/* =========================================================
+   Signature — kartu-label (panel utama)
+   ========================================================= */
+.kartu-label {
+    background: var(--surface);
+    border: var(--garis);
+    border-radius: var(--radius);
+}
+
+.kartu-label-header {
+    background: var(--kraft);
+    border-bottom: 2px dashed var(--ink);
+    padding: 0.55rem 1.1rem;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 0.625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink);
+}
+
+.kartu-label-body {
+    padding: 1.15rem;
+}
+
+.kartu-label-body-flush {
+    padding: 0;
+}
+
+/* =========================================================
+   Signature — stempel
+   ========================================================= */
+.stempel {
+    display: inline-block;
+    border: 2px solid var(--ink);
+    color: var(--ink);
+    background: transparent;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 0.625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding: 0.15rem 0.4rem;
+    border-radius: var(--radius);
+    transform: rotate(-2deg);
+    white-space: nowrap;
+    line-height: 1.3;
+}
+
+.stempel-menipis {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--aksen-pucat);
+}
+
+.stempel-aman {
+    border-color: var(--ink);
+    color: var(--ink);
+    background: transparent;
+}
+
+.stempel-masuk {
+    border-color: var(--ink);
+    color: var(--ink);
+    background: var(--kraft);
+}
+
+.stempel-keluar {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--aksen-pucat);
+}
+
+/* stempel role di sidebar gelap — teks krem supaya terbaca */
+.stempel-role {
+    border-color: var(--krem);
+    color: var(--krem);
+    background: transparent;
+    font-size: 0.5625rem;
+    letter-spacing: 0.14em;
+}
+
+/* outline tipis — dipakai untuk role staff di tabel user */
+.stempel-tipis {
+    border-width: 1px;
+    color: var(--text-secondary);
+}
+
+/* =========================================================
+   Signature — angka besar dashboard
+   ========================================================= */
+.angka-row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.angka-item {
+    flex: 1 1 140px;
+    padding: 1.25rem 1.35rem;
+    min-width: 0;
+    border-right: 2px dashed var(--ink);
+}
+
+.angka-item:last-child {
+    border-right: none;
+}
+
+.angka-label {
+    display: block;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 0.625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-secondary);
+    margin-bottom: 0.45rem;
+}
+
+.angka-besar {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 44px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+    display: block;
+}
+
+.angka-besar.is-alert {
+    color: var(--accent);
+}
+
+.angka-besar.is-currency {
+    font-size: clamp(1.65rem, 2.8vw, 2.15rem);
+    letter-spacing: -0.02em;
+    padding-top: 0.35rem;
+    padding-bottom: 0.35rem;
+}
+
+/* =========================================================
+   Layout aplikasi
+   ========================================================= */
+.app-shell {
+    display: flex;
+    min-height: 100vh;
+}
+
+.mobile-topbar {
+    display: none;
+}
+
+.sidebar {
+    width: var(--sidebar-w);
+    flex-shrink: 0;
+    background: var(--sidebar-bg);
+    color: #b0aea6;
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    z-index: 40;
+}
+
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 1.25rem 1.15rem;
+    font-family: 'Archivo', sans-serif;
+    font-weight: 800;
+    font-size: 1.15rem;
+    letter-spacing: -0.02em;
+    color: #fff;
+    border-bottom: 1px solid #2a2a2a;
+}
+
+.sidebar-brand-mark {
+    width: 14px;
+    height: 14px;
+    background: var(--accent);
+    border: 1px solid #fff;
+    flex-shrink: 0;
+}
+
+.sidebar-brand span {
+    display: block;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 0.5625rem;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #7a786f;
+    margin-top: 0.15rem;
+}
+
+.sidebar-nav {
+    flex: 1;
+    padding: 1.15rem 0;
+}
+
+.sidebar-nav .nav-label {
+    padding: 0 1.15rem;
+    margin: 0 0 0.5rem;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 0.5625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #6e6c64;
+}
+
+.sidebar-nav .nav-label-gap {
+    margin-top: 1.35rem;
+}
+
+.sidebar-nav a {
+    display: block;
+    padding: 0.5rem 1.15rem;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #b0aea6;
+    text-decoration: none;
+    border-left: 4px solid transparent;
+}
+
+.sidebar-nav a:hover {
+    color: #fff;
+    background: #1a1a1a;
+}
+
+.sidebar-nav a.active {
+    color: #fff;
+    background: #1f1f1f;
+    border-left-color: var(--accent);
+}
+
+.sidebar-footer {
+    padding: 1.15rem;
+    border-top: 1px solid #2a2a2a;
+    font-size: 0.8125rem;
+}
+
+.sidebar-footer .name {
+    font-weight: 500;
+    color: #e8e6e1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0 0 0.4rem;
+}
+
+.sidebar-footer .role {
+    display: block;
+    margin: 0 0 0.85rem;
+}
+
+.sidebar-footer form {
+    margin: 0;
+}
+
+.sidebar-footer button {
+    background: none;
+    border: 2px solid var(--krem);
+    padding: 0;
+    height: 36px;
+    color: #b0aea6;
+    font-size: 0.75rem;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border-radius: var(--radius);
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    padding: 0 0.75rem;
+}
+
+.sidebar-footer button:hover {
+    color: var(--ink);
+    background: var(--krem);
+    border-color: var(--krem);
+}
+
+.main {
+    flex: 1;
+    min-width: 0;
+    padding: 1.75rem 1.85rem 2.5rem;
+}
+
+.sidebar-backdrop {
+    display: none;
+}
+
+.menu-toggle {
+    background: none;
+    border: 1px solid #4a4a4a;
+    color: #fff;
+    font-size: 0.75rem;
+    font-family: inherit;
+    padding: 0.4rem 0.75rem;
+    border-radius: var(--radius);
+    cursor: pointer;
+}
+
+.menu-toggle:hover {
+    border-color: var(--accent);
+}
+
+@media (max-width: 860px) {
+    .mobile-topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 0.75rem 1rem;
+        background: var(--sidebar-bg);
+        color: #fff;
+        position: sticky;
+        top: 0;
+        z-index: 50;
+    }
+
+    .mobile-topbar .brand {
+        font-family: 'Archivo', sans-serif;
+        font-weight: 800;
+        font-size: 0.95rem;
+        letter-spacing: -0.02em;
+    }
+
+    .app-shell {
+        display: block;
+    }
+
+    .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        transform: translateX(-100%);
+        transition: transform 0.15s ease;
+        height: 100vh;
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    .sidebar-backdrop {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.15s ease;
+        z-index: 35;
+    }
+
+    .sidebar-backdrop.open {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .main {
+        padding: 1.25rem 1rem 2rem;
+    }
+}
+
+/* =========================================================
+   Header halaman
+   ========================================================= */
+.page-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding-bottom: 0.85rem;
+    margin-bottom: 1.65rem;
+    border-bottom: var(--garis);
+}
+
+.page-header-aside {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-shrink: 0;
+}
+
+.page-title {
+    font-family: 'Archivo', sans-serif;
+    font-weight: 800;
+    font-size: 32px;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    margin: 0;
+    color: var(--ink);
+}
+
+.page-title-flush {
+    margin-bottom: 0;
+}
+
+.page-meta {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+    margin: 0.5rem 0 0;
+}
+
+.page-date {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+/* catatan penjelas singkat di bawah header halaman */
+.page-note {
+    margin: -0.75rem 0 1.5rem;
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+}
+
+/* =========================================================
+   Tombol
+   ========================================================= */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.55rem 1.1rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+    border-radius: var(--radius);
+    border: 2px solid var(--ink);
+    cursor: pointer;
+    text-decoration: none;
+    background: transparent;
+    color: var(--ink);
+    font-family: inherit;
+    white-space: nowrap;
+}
+
+.btn-primary {
+    background: var(--accent);
+    border-color: var(--ink);
+    color: #fff;
+    box-shadow: 4px 4px 0 0 var(--ink);
+}
+
+.btn-primary:hover {
+    background: var(--accent-deep);
+    box-shadow: 2px 2px 0 0 var(--ink);
+    transform: translate(2px, 2px);
+}
+
+.btn-primary:active {
+    box-shadow: 0 0 0 0 var(--ink);
+    transform: translate(4px, 4px);
+}
+
+.btn-secondary {
+    background: var(--surface);
+    border-color: var(--ink);
+    color: var(--ink);
+    box-shadow: none;
+}
+
+.btn-secondary:hover {
+    background: var(--kraft);
+    box-shadow: none;
+    transform: none;
+}
+
+.btn-secondary:active {
+    box-shadow: none;
+    transform: none;
+}
+
+.btn-danger {
+    background: transparent;
+    border: 2px solid var(--danger);
+    color: var(--danger);
+    padding: 0.35rem 0.8rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: none;
+}
+
+.btn-danger:hover {
+    color: #fff;
+    background: var(--danger);
+    box-shadow: none;
+    transform: none;
+}
+
+/* varian kecil — tombol aksi di dalam tabel */
+.btn-sm {
+    padding: 0.3rem 0.7rem;
+    font-size: 0.75rem;
+    gap: 0.3rem;
+}
+
+.link-sm {
+    font-size: 0.75rem;
+    margin-top: 0.35rem;
+    padding: 0;
+    background: none;
+    border: none;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.link {
+    color: var(--ink);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+}
+
+.link:hover {
+    color: var(--accent);
+    text-decoration-thickness: 2px;
+}
+
+/* =========================================================
+   Form
+   ========================================================= */
+.label {
+    display: block;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 0.625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-secondary);
+    margin-bottom: 0.4rem;
+}
+
+.input {
+    display: block;
+    width: 100%;
+    padding: 0.55rem 0.75rem;
+    font-size: 0.875rem;
+    font-family: inherit;
+    color: var(--ink);
+    background: var(--surface);
+    border: 2px solid var(--ink);
+    border-radius: var(--radius);
+}
+
+.input::placeholder {
+    color: #9a978e;
+}
+
+.input:focus {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+}
+
+select.input {
+    appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--ink) 50%),
+        linear-gradient(135deg, var(--ink) 50%, transparent 50%);
+    background-position: calc(100% - 16px) calc(50% - 2px), calc(100% - 11px) calc(50% - 2px);
+    background-size: 5px 5px, 5px 5px;
+    background-repeat: no-repeat;
+    padding-right: 1.85rem;
+}
+
+.error-text {
+    color: var(--danger);
+    font-size: 0.75rem;
+    margin-top: 0.35rem;
+}
+
+.hint-text {
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    margin-top: 0.35rem;
+}
+
+.form-panel {
+    max-width: 34rem;
+}
+
+.form-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.35rem;
+}
+
+.form-row-2 {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+@media (min-width: 640px) {
+    .form-row-2 {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.form-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.35rem;
+    padding-top: 1.1rem;
+    border-top: 2px dashed var(--ink);
+}
+
+/* input kecil — dipakai di form ubah role pada tabel user */
+.input-sm {
+    display: inline-block;
+    width: auto;
+    padding: 0.3rem 0.55rem;
+    font-size: 0.75rem;
+}
+
+/* form ubah role inline di bawah stempel role */
+.role-form {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.5rem;
+}
+
+/* toggle besar MASUK / KELUAR — pengganti dropdown jenis transaksi */
+.tipe-toggle {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+
+.tipe-btn {
+    padding: 0.8rem 1rem;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    background: var(--surface);
+    color: var(--ink);
+    box-shadow: none;
+}
+
+.tipe-btn:hover {
+    background: var(--kraft);
+    box-shadow: none;
+    transform: none;
+}
+
+.tipe-btn.is-active {
+    background: var(--ink);
+    color: var(--krem);
+    box-shadow: 4px 4px 0 0 var(--accent);
+}
+
+/* =========================================================
+   Panel / tabel
+   ========================================================= */
+.panel {
+    background: var(--surface);
+    border: var(--garis);
+    border-radius: var(--radius);
+}
+
+.panel-pad {
+    padding: 1.1rem;
+}
+
+.section-block {
+    margin-bottom: 1.65rem;
+}
+
+.section-heading {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-secondary);
+    margin: 0 0 0.75rem;
+}
+
+.table-wrap {
+    overflow-x: auto;
+    background: var(--surface);
+    border: var(--garis);
+    border-radius: var(--radius);
+}
+
+.table-wrap-flush {
+    border: none;
+    border-radius: 0;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8125rem;
+}
+
+.table th {
+    text-align: left;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-weight: 600;
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #fff;
+    padding: 0.7rem 1.1rem;
+    border-bottom: var(--garis);
+    background: var(--ink);
+    white-space: nowrap;
+}
+
+.table th.num {
+    text-align: right;
+}
+
+.table td {
+    padding: 0.75rem 1.1rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.table tbody tr:hover td {
+    background: var(--aksen-pucat);
+}
+
+.table tbody tr.is-low td:first-child {
+    border-left: 4px solid var(--accent);
+}
+
+.table tfoot td {
+    padding: 0.9rem 1.1rem;
+    border-top: var(--garis);
+    font-weight: 600;
+    background: var(--kraft);
+}
+
+/* sel aksi baris tabel: Edit + Hapus sejajar kanan */
+.action-cell {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* =========================================================
+   Alert
+   ========================================================= */
+.alert {
+    padding: 0.75rem 1.1rem;
+    font-size: 0.8125rem;
+    background: var(--surface);
+    border: var(--garis);
+    border-left-width: 4px;
+    border-left-color: var(--ink);
+    border-radius: var(--radius);
+    margin-bottom: 1.5rem;
+}
+
+.alert-success {
+    border-left-color: var(--accent);
+    color: var(--ink);
+    font-weight: 500;
+}
+
+.alert-error {
+    border-left-color: var(--danger);
+    color: var(--danger);
+    font-weight: 500;
+    background: #fdecec;
+}
+
+/* =========================================================
+   Badge / filter / pagination
+   ========================================================= */
+.badge-low {
+    display: inline-block;
+    width: 4.8rem;
+    text-align: left;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 0.5625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.15rem 0.35rem;
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    background: var(--aksen-pucat);
+    border-radius: var(--radius);
+    margin-right: 0.45rem;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.badge-slot {
+    display: inline-block;
+    width: 4.8rem;
+    vertical-align: middle;
+}
+
+.badge-type {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 0.5625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0.15rem 0.4rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius);
+    background: var(--kraft);
+    color: var(--ink);
+    transform: rotate(-2deg);
+}
+
+.badge-type-masuk {
+    border-color: var(--ink);
+    color: var(--ink);
+    background: var(--kraft);
+}
+
+.badge-type-keluar {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--aksen-pucat);
+}
+
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.85rem 1rem;
+    padding: 1.1rem 1.15rem;
+    margin-bottom: 1.65rem;
+    background: var(--surface);
+    border: var(--garis);
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius);
+}
+
+.filter-bar .field {
+    min-width: 180px;
+}
+
+.filter-bar .actions {
+    display: flex;
+    gap: 0.55rem;
+    margin-left: auto;
+}
+
+.pagination {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    align-items: center;
+    margin-top: 1.5rem;
+}
+
+.pagination a,
+.pagination span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.1rem;
+    height: 2.1rem;
+    padding: 0 0.55rem;
+    font-size: 0.8125rem;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    text-decoration: none;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--ink);
+}
+
+.pagination a:hover {
+    background: var(--kraft);
+}
+
+.pagination .active span,
+.pagination [aria-current='page'] span {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--krem);
+    font-weight: 600;
+}
+
+/* =========================================================
+   Dashboard
+   ========================================================= */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.65rem;
+    margin-bottom: 1.65rem;
+    align-items: stretch;
+}
+
+@media (min-width: 960px) {
+    .dashboard-grid {
+        grid-template-columns: 1.1fr 1fr;
+    }
+}
+
+.dashboard-grid > .kartu-label {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.dashboard-grid > .kartu-label > .kartu-label-body,
+.dashboard-grid > .kartu-label > .list-plain {
+    flex: 1;
+}
+
+.chart-frame {
+    position: relative;
+    height: 280px;
+}
+
+.chart-legend {
+    display: flex;
+    gap: 1.1rem;
+    margin-bottom: 0.85rem;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 0.625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+}
+
+.chart-legend i {
+    display: inline-block;
+    width: 0.65rem;
+    height: 0.65rem;
+    margin-right: 0.35rem;
+    vertical-align: middle;
+    border: 1px solid var(--ink);
+    border-radius: 1px;
+}
+
+.chart-legend .swatch-masuk {
+    background: var(--ink);
+}
+
+.chart-legend .swatch-keluar {
+    background: var(--accent);
+}
+
+.list-plain {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.list-plain li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1.1rem;
+    font-size: 0.8125rem;
+    border-bottom: 1px solid var(--border);
+    border-left: 4px solid transparent;
+}
+
+.list-plain li:last-child {
+    border-bottom: none;
+}
+
+.list-plain li:hover {
+    background: var(--aksen-pucat);
+}
+
+.list-plain li.is-low {
+    border-left-color: var(--accent);
+}
+
+.list-plain .item-name {
+    display: block;
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.list-plain .item-sku {
+    display: block;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 0.6875rem;
+    color: var(--text-secondary);
+    margin-top: 0.1rem;
+}
+
+.list-plain .qty-low {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.list-plain .qty-low strong {
+    color: var(--accent);
+    font-weight: 700;
+}
+
+.empty-state {
+    padding: 1.35rem 1.1rem;
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.sku-inline {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 0.6875rem;
+    margin-left: 0.35rem;
+    color: var(--text-secondary);
+}
+
+/* =========================================================
+   Halaman auth — label gudang
+   ========================================================= */
+.auth-shell {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr;
+    background: var(--bg);
+}
+
+@media (min-width: 900px) {
+    .auth-shell {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.auth-aside {
+    display: none;
+    background: var(--ink);
+    color: var(--krem);
+    padding: 2.5rem 2.5rem 0;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+@media (min-width: 900px) {
+    .auth-aside {
+        display: flex;
+    }
+}
+
+.auth-aside-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+}
+
+.auth-aside-logo {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--krem);
+}
+
+.auth-aside-logo span {
+    color: var(--accent);
+    margin-left: 0.45rem;
+}
+
+.auth-aside-meta {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 0.5625rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #7a786f;
+}
+
+.auth-aside-title {
+    font-family: 'Archivo', sans-serif;
+    font-weight: 800;
+    font-size: clamp(3.5rem, 7vw, 6rem);
+    line-height: 0.92;
+    letter-spacing: -0.04em;
+    margin: 0 0 1.25rem;
+    color: var(--krem);
+}
+
+.auth-aside-title em {
+    font-style: normal;
+    color: var(--accent);
+}
+
+.auth-aside-desc {
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: #b0aea6;
+    max-width: 22rem;
+    margin: 0 0 2rem;
+}
+
+.auth-aside-bottom {
+    margin-top: auto;
+    position: relative;
+    padding-bottom: 0;
+}
+
+/* label paket hiasan — HTML+CSS murni */
+.label-paket {
+    background: var(--krem);
+    color: var(--ink);
+    border: var(--garis);
+    padding: 1rem 1.15rem 1.15rem;
+    max-width: 17.5rem;
+    transform: rotate(-3deg);
+    margin-bottom: 2.5rem;
+    box-shadow: 6px 6px 0 0 var(--accent);
+}
+
+.label-paket-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    padding-bottom: 0.55rem;
+    margin-bottom: 0.65rem;
+    border-bottom: 2px dashed var(--ink);
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 0.5625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.label-paket-rows {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 0.75rem;
+    line-height: 1.7;
+}
+
+.label-paket-rows div {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.label-paket-rows .k {
+    width: 3.5rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    font-size: 0.625rem;
+    letter-spacing: 0.08em;
+    flex-shrink: 0;
+}
+
+.label-paket-rows .v {
+    font-weight: 500;
+}
+
+.label-paket .stempel {
+    margin-top: 0.85rem;
+}
+
+.auth-aside .pita-hazard {
+    margin-left: -2.5rem;
+    margin-right: -2.5rem;
+    width: calc(100% + 5rem);
+}
+
+.auth-main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2.5rem 1.25rem;
+    background: var(--bg);
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 23rem;
+    background: var(--surface);
+    border: var(--garis);
+    border-radius: var(--radius);
+    padding: 2rem 1.65rem 1.75rem;
+    box-shadow: 6px 6px 0 0 var(--ink);
+}
+
+.auth-title {
+    font-family: 'Archivo', sans-serif;
+    font-weight: 800;
+    font-size: clamp(1.85rem, 4vw, 2.35rem);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    margin: 0 0 0.45rem;
+    color: var(--ink);
+}
+
+.auth-sub {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+    margin: 0 0 1.45rem;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.auth-actions {
+    margin-top: 0.35rem;
+}
+
+.auth-actions .btn {
+    width: 100%;
+    justify-content: center;
+}
+
+.auth-foot {
+    margin-top: 1.35rem;
+    padding-top: 1.1rem;
+    border-top: 2px dashed var(--ink);
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+}
+
+.auth-foot a {
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.auth-foot a:hover {
+    color: var(--accent-deep);
+}
+
+/* =========================================================
+   Live search transaksi
+   ========================================================= */
+.search-wrap {
+    position: relative;
+}
+
+.search-results {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% + 2px);
+    z-index: 20;
+    max-height: 14rem;
+    overflow-y: auto;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background: var(--surface);
+    border: var(--garis);
+    border-radius: var(--radius);
+    box-shadow: 4px 4px 0 0 var(--ink);
+}
+
+.search-results li + li {
+    border-top: 1px solid var(--border);
+}
+
+.search-results button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    padding: 0.55rem 0.85rem;
+    font-size: 0.8125rem;
+    font-family: inherit;
+    color: var(--ink);
+    cursor: pointer;
+}
+
+.search-results button:hover {
+    background: var(--aksen-pucat);
+}
+
+.search-results .empty-row {
+    padding: 0.55rem 0.85rem;
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+}
+
+/* =========================================================
+   Halaman error (403 / 404 / 419 / 500)
+   ========================================================= */
+.error-shell {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.25rem;
+    background: var(--bg);
+}
+
+.error-card {
+    width: 100%;
+    max-width: 30rem;
+    background: var(--surface);
+    border: var(--garis);
+    border-radius: var(--radius);
+    box-shadow: 6px 6px 0 0 var(--ink);
+    overflow: hidden;
+}
+
+.error-body {
+    padding: 1.85rem 1.75rem 1.85rem;
+}
+
+.error-code {
+    margin: 0;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: clamp(3.25rem, 12vw, 4.75rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+}
+
+.error-title {
+    margin: 0.9rem 0 0.5rem;
+    font-family: 'Archivo', sans-serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+}
+
+.error-msg {
+    margin: 0 0 1.5rem;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}

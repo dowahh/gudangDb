@@ -12,6 +12,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // KEAMANAN: percaya semua proxy (Wasmer/Cloudflare dkk.) supaya
+        // HTTPS terdeteksi benar dan header X-Forwarded-* tidak dipalsukan.
+        $middleware->trustProxies(at: '*');
+
         // role: cek role user sebelum masuk route admin/staff
         $middleware->alias([
             'role' => CheckRole::class,
